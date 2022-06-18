@@ -3,3 +3,10 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# locks
+pnpm-lock.yaml
+yarn-lock.yaml
+package-lock.json
+
+# 

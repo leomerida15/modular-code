@@ -1,35 +1,38 @@
-import { useCallback } from 'react';
+/** @format */
+import { z } from "zod";
+import { useCallback } from "react";
 
-export const useYupValidationResolver = (validationSchema: any) =>
-  useCallback(
-    async (data) => {
-      try {
-        const values = await validationSchema.validate(data, {
-          abortEarly: false
-        });
+const User = z.object({
+	username: z.string(),
+});
 
-        return {
-          values,
-          errors: {}
-        };
-      } catch (errors: any) {
-        return {
-          values: {},
-          errors: errors.inner.reduce(
-            (
-              allErrors: any,
-              currentError: { path: any; type: any; message: any }
-            ) => ({
-              ...allErrors,
-              [currentError.path]: {
-                type: currentError.type ?? 'validation',
-                message: currentError.message
-              }
-            }),
-            {}
-          )
-        };
-      }
-    },
-    [validationSchema]
-  );
+type a = z.infer<typeof User>;
+
+export const useZodValid = (validationSchema: z.ZodObject<any>) =>
+	useCallback(
+		async (data) => {
+			try {
+				const values = validationSchema.parse(data);
+
+				return {
+					values,
+					errors: {},
+				};
+			} catch (errors: any) {
+				return {
+					values: {},
+					errors: errors.inner.reduce(
+						(allErrors: any, currentError: { path: any; type: any; message: any }) => ({
+							...allErrors,
+							[currentError.path]: {
+								type: currentError.type ?? "validation",
+								message: currentError.message,
+							},
+						}),
+						{},
+					),
+				};
+			}
+		},
+		[validationSchema],
+	);
