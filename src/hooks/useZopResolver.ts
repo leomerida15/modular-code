@@ -10,7 +10,7 @@ type a = z.infer<typeof User>;
 
 export const useZodValid = (validationSchema: z.ZodObject<any>) =>
 	useCallback(
-		async (data) => {
+		(data) => {
 			try {
 				const values = validationSchema.parse(data);
 
